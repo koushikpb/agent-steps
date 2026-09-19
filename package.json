@@ -1,0 +1,36 @@
+{
+  "name": "agent-steps",
+  "version": "0.1.0",
+  "private": true,
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev -p 3117",
+    "build": "NEXT_TELEMETRY_DISABLED=1 next build",
+    "start": "NEXT_TELEMETRY_DISABLED=1 next start -p 3117",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test tests/e2e",
+    "test:perf": "playwright test tests/perf",
+    "record": "node scripts/record.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.110.0",
+    "diff": "9.0.0",
+    "next": "16.2.9",
+    "plotly.js-dist-min": "4.1.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-plotly.js": "4.1.0",
+    "zod": "4.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.0",
+    "@tailwindcss/postcss": "4.1.10",
+    "@types/node": "22.18.0",
+    "@types/react": "19.1.12",
+    "@types/react-dom": "19.1.9",
+    "tailwindcss": "4.1.10",
+    "typescript": "5.9.2",
+    "vitest": "4.1.6"
+  }
+}
