@@ -48,4 +48,11 @@ describe('runPython', () => {
     const r = await runPython('print(open("hello.txt").read())', { cwd });
     expect(r.stdout).toBe('hi\n');
   });
+
+  it('imports a module from the cwd', async () => {
+    await fs.writeFile(path.join(cwd, 'helper.py'), 'VALUE = 7\n', 'utf8');
+    const r = await runPython('import helper\nprint(helper.VALUE)', { cwd });
+    expect(r.stdout).toBe('7\n');
+    expect(r.exitCode).toBe(0);
+  });
 });

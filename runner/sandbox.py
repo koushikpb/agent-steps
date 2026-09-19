@@ -31,6 +31,7 @@ def _blocked(*args, **kwargs):
 def main():
     _limit("RLIMIT_CPU", CPU_SECONDS)
     _limit("RLIMIT_FSIZE", MAX_FILE_BYTES)
+    sys.path.insert(0, os.getcwd())  # -I drops the cwd from sys.path; scripts in the project dir must import their siblings
     socket.socket = _blocked
     socket.create_connection = _blocked
     socket.getaddrinfo = _blocked
