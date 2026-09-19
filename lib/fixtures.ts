@@ -1,6 +1,7 @@
 import type { Fixture } from './types';
 
 const REGISTRY: Record<string, () => Promise<Fixture>> = {
+  demo: () => import('../fixtures/demo.json').then((m) => m.default as unknown as Fixture),
   mini: () => import('../fixtures/mini.json').then((m) => m.default as unknown as Fixture),
 };
 
