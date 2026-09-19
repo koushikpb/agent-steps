@@ -1,0 +1,129 @@
+{
+  "generatedAt": "2026-09-19T23:51:52.816Z",
+  "speed": 1,
+  "runs": 2,
+  "samples": [
+    {
+      "parser": "buffered",
+      "memo": "off",
+      "ttfsMs": 6229.699999988079,
+      "ttfdMs": 6230.199999988079,
+      "totalMs": 25919.80000001192,
+      "eventCount": 56,
+      "commits": 36,
+      "actualMs": 76.39999988675117
+    },
+    {
+      "parser": "buffered",
+      "memo": "off",
+      "ttfsMs": 6118.800000011921,
+      "ttfdMs": 6119.199999988079,
+      "totalMs": 25834,
+      "eventCount": 56,
+      "commits": 37,
+      "actualMs": 63.59999993443489
+    },
+    {
+      "parser": "streaming",
+      "memo": "off",
+      "ttfsMs": 5875.199999988079,
+      "ttfdMs": 5879.299999982119,
+      "totalMs": 25809.5,
+      "eventCount": 67,
+      "commits": 45,
+      "actualMs": 75.60000005364418
+    },
+    {
+      "parser": "streaming",
+      "memo": "off",
+      "ttfsMs": 5873,
+      "ttfdMs": 5876.199999988079,
+      "totalMs": 25802.79999998212,
+      "eventCount": 67,
+      "commits": 46,
+      "actualMs": 75.80000007152557
+    },
+    {
+      "parser": "buffered",
+      "memo": "on",
+      "ttfsMs": 6113.5999999940395,
+      "ttfdMs": 6114.199999988079,
+      "totalMs": 25839.79999998212,
+      "eventCount": 56,
+      "commits": 39,
+      "actualMs": 20.600000023841858
+    },
+    {
+      "parser": "buffered",
+      "memo": "on",
+      "ttfsMs": 6099.799999982119,
+      "ttfdMs": 6100,
+      "totalMs": 25790.59999999404,
+      "eventCount": 56,
+      "commits": 40,
+      "actualMs": 13.40000006556511
+    },
+    {
+      "parser": "streaming",
+      "memo": "on",
+      "ttfsMs": 5870.5999999940395,
+      "ttfdMs": 5875.199999988079,
+      "totalMs": 25794.09999999404,
+      "eventCount": 67,
+      "commits": 50,
+      "actualMs": 25.999999970197678
+    },
+    {
+      "parser": "streaming",
+      "memo": "on",
+      "ttfsMs": 5866.200000017881,
+      "ttfdMs": 5870.700000017881,
+      "totalMs": 25785.30000001192,
+      "eventCount": 67,
+      "commits": 46,
+      "actualMs": 18.79999989271164
+    }
+  ],
+  "medians": [
+    {
+      "parser": "buffered",
+      "memo": "off",
+      "ttfsMs": 6174.25,
+      "ttfdMs": 6174.699999988079,
+      "commits": 36.5,
+      "actualMs": 69.99999991059303,
+      "eventCount": 56,
+      "totalMs": 25876.90000000596
+    },
+    {
+      "parser": "streaming",
+      "memo": "off",
+      "ttfsMs": 5874.0999999940395,
+      "ttfdMs": 5877.749999985099,
+      "commits": 45.5,
+      "actualMs": 75.70000006258488,
+      "eventCount": 67,
+      "totalMs": 25806.14999999106
+    },
+    {
+      "parser": "buffered",
+      "memo": "on",
+      "ttfsMs": 6106.699999988079,
+      "ttfdMs": 6107.0999999940395,
+      "commits": 39.5,
+      "actualMs": 17.000000044703484,
+      "eventCount": 56,
+      "totalMs": 25815.19999998808
+    },
+    {
+      "parser": "streaming",
+      "memo": "on",
+      "ttfsMs": 5868.4000000059605,
+      "ttfdMs": 5872.95000000298,
+      "commits": 48,
+      "actualMs": 22.39999993145466,
+      "eventCount": 67,
+      "totalMs": 25789.70000000298
+    }
+  ]
+}
