@@ -38,9 +38,11 @@ function parseField(json: string, field: string): string {
  */
 export async function runAgent(opts: RunAgentOptions): Promise<void> {
   const { source, execute, emit, parser, recorder } = opts;
+  const maxTurns = opts.maxTurns ?? MAX_TURNS;
   const messages: Anthropic.MessageParam[] = [{ role: 'user', content: opts.prompt }];
+  let finishedCleanly = false;
   try {
-    for (let turn = 0; turn < (opts.maxTurns ?? MAX_TURNS); turn++) {
+    for (let turn = 0; turn < maxTurns; turn++) {
       const current = source.turn(messages);
       const open = new Map<number, OpenBlock>();
       recorder?.beginTurn();
@@ -86,7 +88,7 @@ export async function runAgent(opts: RunAgentOptions): Promise<void> {
         emit({ type: 'error', message: 'Tool input was cut off at max_tokens; try a smaller task.' });
         return;
       }
-      if (toolUses.length === 0) break;
+      if (toolUses.length === 0) { finishedCleanly = true; break; }
       messages.push({ role: 'assistant', content: final.content });
       const results: Anthropic.ToolResultBlockParam[] = [];
       for (const use of toolUses) {
@@ -110,7 +112,11 @@ export async function runAgent(opts: RunAgentOptions): Promise<void> {
       }
       messages.push({ role: 'user', content: results });
     }
-    emit({ type: 'done' });
+    if (finishedCleanly) {
+      emit({ type: 'done' });
+    } else {
+      emit({ type: 'error', message: `Stopped after ${maxTurns} model turns; the task did not finish.` });
+    }
   } catch (err) {
     emit({ type: 'error', message: err instanceof Error ? err.message : String(err) });
   }

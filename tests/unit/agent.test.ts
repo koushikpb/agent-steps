@@ -74,4 +74,14 @@ describe('runAgent', () => {
     await runAgent({ prompt: 'x', source, execute: neverRun, emit: (e) => events.push(e), parser: 'streaming' });
     expect(events).toEqual([{ type: 'error', message: 'boom' }]);
   });
+
+  it('reports an error instead of done when maxTurns is exhausted with tools pending', async () => {
+    const final = fixture.turns[0].final; // stop_reason 'tool_use' with one run_python call
+    const events: AgentEvent[] = [];
+    const execute: ToolExecutor = async () => fixture.toolResults.toolu_mini_1;
+    await runAgent({ prompt: 'x', source: scripted(final), execute, emit: (e) => events.push(e), parser: 'streaming', maxTurns: 2 });
+    expect(events.filter((e) => e.type === 'step_done').length).toBe(2);
+    expect(events[events.length - 1]).toEqual({ type: 'error', message: 'Stopped after 2 model turns; the task did not finish.' });
+    expect(events.some((e) => e.type === 'done')).toBe(false);
+  });
 });
