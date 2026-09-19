@@ -1,3 +1,9 @@
+import { Chat } from '../components/Chat';
+import { liveEnabled } from '../lib/chat-request';
+import { listFixtures } from '../lib/fixtures';
+
+export const dynamic = 'force-dynamic';
+
 export default function Page() {
-  return <main className="p-4 text-sm">agent-steps: scaffold</main>;
+  return <Chat liveEnabled={liveEnabled()} fixtures={listFixtures()} />;
 }
