@@ -7,7 +7,7 @@ export const ChatBody = z.object({
   mode: z.enum(['live', 'replay']),
   fixture: NAME.default('demo'),
   parser: z.enum(['buffered', 'streaming']).default('streaming'),
-  speed: z.number().min(0.1).max(1000).default(1),
+  speed: z.number().min(0.5).max(1000).default(1),
   record: NAME.optional(),
 });
 export type ChatBody = z.infer<typeof ChatBody>;

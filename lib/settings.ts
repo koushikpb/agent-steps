@@ -13,6 +13,6 @@ export function readSettings(search: string, fixtures: string[], liveEnabled: bo
     fixture,
     parser: q.get('parser') === 'buffered' ? 'buffered' : 'streaming',
     memo: q.get('memo') !== 'off',
-    speed: Number.isFinite(speed) && speed > 0 ? Math.min(1000, Math.max(0.1, speed)) : 1,
+    speed: Number.isFinite(speed) && speed > 0 ? Math.min(1000, Math.max(0.5, speed)) : 1,
   };
 }

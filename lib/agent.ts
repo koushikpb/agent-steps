@@ -41,21 +41,29 @@ export async function runAgent(opts: RunAgentOptions): Promise<void> {
   const maxTurns = opts.maxTurns ?? MAX_TURNS;
   const messages: Anthropic.MessageParam[] = [{ role: 'user', content: opts.prompt }];
   let finishedCleanly = false;
+  let sawTextBlock = false;
   try {
     for (let turn = 0; turn < maxTurns; turn++) {
       const current = source.turn(messages);
       const open = new Map<number, OpenBlock>();
+      const pendingTextSeparator = new Set<number>();
       recorder?.beginTurn();
       for await (const ev of current.events) {
         recorder?.event(ev);
         if (ev.type === 'content_block_start') {
+          if (ev.content_block.type === 'text') {
+            if (sawTextBlock) pendingTextSeparator.add(ev.index);
+            sawTextBlock = true;
+            continue;
+          }
           if (ev.content_block.type !== 'tool_use' || !isToolName(ev.content_block.name)) continue;
           const block: OpenBlock = { id: ev.content_block.id, name: ev.content_block.name, json: '', emitted: 0 };
           open.set(ev.index, block);
           if (parser === 'streaming') emit({ type: 'step_started', stepId: block.id, tool: block.name, label: RUNNING_LABELS[block.name] });
         } else if (ev.type === 'content_block_delta') {
           if (ev.delta.type === 'text_delta') {
-            emit({ type: 'text_delta', text: ev.delta.text });
+            const sep = pendingTextSeparator.delete(ev.index) ? '\n\n' : '';
+            emit({ type: 'text_delta', text: sep + ev.delta.text });
             continue;
           }
           const block = open.get(ev.index);
@@ -86,6 +94,10 @@ export async function runAgent(opts: RunAgentOptions): Promise<void> {
       }
       if (final.stop_reason === 'max_tokens' && toolUses.length > 0) {
         emit({ type: 'error', message: 'Tool input was cut off at max_tokens; try a smaller task.' });
+        return;
+      }
+      if (final.stop_reason === 'max_tokens') {
+        emit({ type: 'error', message: 'The answer was cut off at max_tokens; try a smaller task.' });
         return;
       }
       if (toolUses.length === 0) { finishedCleanly = true; break; }

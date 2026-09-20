@@ -31,7 +31,8 @@ export async function POST(request: Request): Promise<Response> {
       let closed = false;
       request.signal.addEventListener('abort', () => { closed = true; });
       const emit = (event: AgentEvent) => {
-        if (!closed) controller.enqueue(encoder.encode(encodeSse(event)));
+        if (closed) throw new Error('client disconnected');
+        controller.enqueue(encoder.encode(encodeSse(event)));
       };
       let workspace: Awaited<ReturnType<typeof createWorkspace>> | null = null;
       const recording = !fixture && record ? createRecorder(prompt) : null;
@@ -46,7 +47,7 @@ export async function POST(request: Request): Promise<Response> {
           }
         }
       } catch (err) {
-        emit({ type: 'error', message: err instanceof Error ? err.message : String(err) });
+        if (!closed) emit({ type: 'error', message: err instanceof Error ? err.message : String(err) });
       } finally {
         await workspace?.cleanup();
         closed = true;

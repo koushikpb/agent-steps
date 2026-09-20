@@ -68,6 +68,24 @@ describe('runAgent', () => {
     expect(events).toEqual([{ type: 'error', message: 'Tool input was cut off at max_tokens; try a smaller task.' }]);
   });
 
+  it('stops with an error when the answer text is cut off at max_tokens with no tool block', async () => {
+    const final = {
+      ...fixture.turns[0].final,
+      content: [{ type: 'text', text: 'partial answer' }],
+      stop_reason: 'max_tokens',
+    } as Anthropic.Message;
+    const events: AgentEvent[] = [];
+    await runAgent({ prompt: 'x', source: scripted(final), execute: neverRun, emit: (e) => events.push(e), parser: 'streaming' });
+    expect(events).toEqual([{ type: 'error', message: 'The answer was cut off at max_tokens; try a smaller task.' }]);
+  });
+
+  it('separates text from consecutive text blocks with a blank line', async () => {
+    const events = await collect('streaming');
+    const textDeltas = events.filter((e): e is Extract<AgentEvent, { type: 'text_delta' }> => e.type === 'text_delta');
+    expect(textDeltas.length).toBe(2);
+    expect(textDeltas.map((d) => d.text).join('')).toBe('Let me compute that.\n\n 1+1 is 2.');
+  });
+
   it('turns a thrown source error into an error event', async () => {
     const source: ModelSource = { turn: () => { throw new Error('boom'); } };
     const events: AgentEvent[] = [];

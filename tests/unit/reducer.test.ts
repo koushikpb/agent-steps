@@ -48,6 +48,21 @@ describe('applyEvent', () => {
     expect(s.error).toBe('boom');
   });
 
+  it('marks running steps as error when the run errors, leaving finished steps untouched', () => {
+    const s1 = run([
+      { type: 'step_started', stepId: 'a', tool: 'run_python', label: 'Generating code' },
+      { type: 'step_started', stepId: 'b', tool: 'run_python', label: 'Generating code' },
+      { type: 'step_done', stepId: 'a', label: 'Generated code', status: 'ok', output: '1\n', diff: null, durationMs: 5 },
+    ]);
+    const stepA = s1.steps[0];
+    const s2 = applyEvent(s1, { type: 'error', message: 'boom' });
+    expect(s2.steps[0]).toBe(stepA);
+    expect(s2.steps[0].status).toBe('ok');
+    expect(s2.steps[1].status).toBe('error');
+    expect(s2.status).toBe('error');
+    expect(s2.error).toBe('boom');
+  });
+
   it('reset returns the initial state', () => {
     const s = reducer(run([{ type: 'text_delta', text: 'x' }]), { type: 'reset' });
     expect(s).toBe(initialState);

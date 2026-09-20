@@ -50,7 +50,12 @@ export function applyEvent(state: ChatState, event: AgentEvent): ChatState {
     case 'done':
       return { ...state, status: 'done' };
     case 'error':
-      return { ...state, status: 'error', error: event.message };
+      return {
+        ...state,
+        status: 'error',
+        error: event.message,
+        steps: state.steps.map((step) => (step.status === 'running' ? { ...step, status: 'error' } : step)),
+      };
   }
 }
 

@@ -43,6 +43,15 @@ describe('runPython', () => {
     expect(sub.stderr).toMatch(/ModuleNotFoundError|ImportError/); // 3.12 prints "ModuleNotFoundError: import of subprocess halted; None in sys.modules"
   });
 
+  it('blocks subprocess creation via os', async () => {
+    const system = await runPython('import os\nos.system("true")', { cwd });
+    expect(system.exitCode).toBe(1);
+    expect(system.stderr).toContain('disabled in this runner');
+    const fork = await runPython('import os\nos.fork()', { cwd });
+    expect(fork.exitCode).toBe(1);
+    expect(fork.stderr).toContain('disabled in this runner');
+  });
+
   it('runs in the given cwd', async () => {
     await fs.writeFile(path.join(cwd, 'hello.txt'), 'hi', 'utf8');
     const r = await runPython('print(open("hello.txt").read())', { cwd });

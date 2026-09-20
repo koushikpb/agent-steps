@@ -28,6 +28,10 @@ def _blocked(*args, **kwargs):
     raise OSError("network access is disabled in this runner")
 
 
+def _no_subprocess(*args, **kwargs):
+    raise OSError("subprocesses are disabled in this runner")
+
+
 def main():
     _limit("RLIMIT_CPU", CPU_SECONDS)
     _limit("RLIMIT_FSIZE", MAX_FILE_BYTES)
@@ -37,6 +41,13 @@ def main():
     socket.getaddrinfo = _blocked
     os.system = _blocked
     os.popen = _blocked
+    for name in (
+        "fork", "execv", "execve", "execvp", "execvpe",
+        "spawnv", "spawnve", "spawnvp", "spawnvpe",
+        "posix_spawn", "posix_spawnp",
+    ):
+        if hasattr(os, name):
+            setattr(os, name, _no_subprocess)
     for name in ("subprocess", "ctypes", "multiprocessing", "ensurepip", "pip"):
         sys.modules[name] = None  # makes `import <name>` raise ImportError
     code = sys.stdin.read()

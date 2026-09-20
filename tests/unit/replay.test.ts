@@ -55,6 +55,7 @@ describe('createRecorder', () => {
     expect(f.version).toBe(1);
     expect(f.prompt).toBe('p');
     expect(f.turns).toEqual([{ events: [{ t: 250, event: ev }], final: fixture.turns[1].final }]);
+    expect(f.turns[0].events[0].event).not.toBe(ev);
     expect(f.toolResults.toolu_x.output).toBe('2\n');
   });
 });

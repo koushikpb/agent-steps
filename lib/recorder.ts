@@ -9,7 +9,8 @@ export function createRecorder(prompt: string, now: () => number = () => perform
   let turnStart = 0;
   const recorder: Recorder = {
     beginTurn() { events = []; turnStart = now(); },
-    event(e: StreamEvent) { events.push({ t: Math.round(now() - turnStart), event: e }); },
+    // Copy each event: the SDK mutates message_start.message in place while accumulating.
+    event(e: StreamEvent) { events.push({ t: Math.round(now() - turnStart), event: structuredClone(e) }); },
     endTurn(final: Anthropic.Message) { turns.push({ events, final }); },
     tool(toolUseId: string, outcome: ToolOutcome) { toolResults[toolUseId] = outcome; },
   };

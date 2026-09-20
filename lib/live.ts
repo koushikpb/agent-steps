@@ -4,7 +4,7 @@ import { TOOLS } from './tools';
 import type { ModelSource, ModelTurn } from './types';
 
 export const MODEL = 'claude-sonnet-5';
-export const MAX_TOKENS = 32000; // headroom: adaptive thinking (Sonnet 5 default) counts against max_tokens
+export const MAX_TOKENS = 32000; // headroom for thinking if it is enabled; the recorded demo run used none
 
 /** Streams one model turn per call through the Anthropic SDK; the client reads ANTHROPIC_API_KEY from the environment. */
 export function liveSource(client: Anthropic): ModelSource {
