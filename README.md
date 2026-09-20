@@ -32,7 +32,7 @@ Time-to-first-step, time-to-first-delta, and React Profiler commit count / rende
 
 ## Deploy
 
-The Vercel deploy is replay-only: the server never runs Python there. Set no environment variables; `ALLOW_LIVE` stays unset, so the Live option is disabled and every run replays `fixtures/demo.json` (raw model events with their original timing) through the same route handler, agent loop, and UI as a live run. The route exports `maxDuration = 300` because a full-speed replay streams for the length of the recorded run (under 120 s) and the default function limit could cut it off; lower the number if your Vercel plan rejects it. The committed `fixtures/demo.json` is a 5-turn run (run_python, edit_file, run_python, make_chart; 89 streamed tool-input chunks) that replays in about 26 s at speed 1.
+The Vercel deploy is replay-only: the server never runs Python there. Set no environment variables; `ALLOW_LIVE` stays unset, so the Live option is disabled and every run replays `fixtures/demo.json` (raw model events with their original timing) through the same route handler, agent loop, and UI as a live run. The route exports `maxDuration = 300` because a full-speed replay streams for the length of the recorded run (under 120 s) and the default function limit could cut it off; lower the number if your Vercel plan rejects it. The committed `fixtures/demo.json` is a 5-turn run (run_python, edit_file, run_python, make_chart; 46 streamed tool-input chunks) that replays in about 26 s at speed 1.
 
 ## Protocol
 

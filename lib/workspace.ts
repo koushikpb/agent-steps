@@ -7,10 +7,10 @@ export const TEMPLATE_DIR = path.join(process.cwd(), 'workspace');
 
 export type Workspace = { dir: string; cleanup(): Promise<void> };
 
-export async function createWorkspace(template: string = TEMPLATE_DIR): Promise<Workspace> {
+export async function createWorkspace(): Promise<Workspace> {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'agent-steps-'));
-  for (const name of await fs.readdir(template)) {
-    await fs.copyFile(path.join(template, name), path.join(dir, name));
+  for (const name of await fs.readdir(TEMPLATE_DIR)) {
+    await fs.copyFile(path.join(TEMPLATE_DIR, name), path.join(dir, name));
   }
   return { dir, cleanup: () => fs.rm(dir, { recursive: true, force: true }) };
 }
