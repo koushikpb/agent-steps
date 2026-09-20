@@ -14,18 +14,18 @@ npm run dev            # http://localhost:3117 — Replay mode plays a recorded 
 npm test               # unit tests; e2e: npx playwright install chromium && npx playwright test tests/e2e ; perf: npx playwright test tests/perf
 ```
 
-Unit tests (`npm test`) and Live mode need a local `python3` (3.12+); the hosted replay demo needs none. Live mode (a real agent run) also needs `ANTHROPIC_API_KEY` in `.env.local` (copy `.env.example`) and `ALLOW_LIVE=1 npm run dev`. Record a new fixture with `npm run record -- <name>` while the live server runs. Inside the runner, `subprocess` and `os.system` are disabled and the working directory is on `sys.path`, so scripts can import `summarize.py`. The dev server uses port 3117 and the scripts set `NEXT_TELEMETRY_DISABLED=1`.
+Unit tests (`npm test`) and Live mode need a local `python3` (3.12+); the hosted replay demo needs none. Live mode (a real agent run) also needs `ANTHROPIC_API_KEY` in `.env.local` (copy `.env.example`) and `ALLOW_LIVE=1 npm run dev`. Record a new fixture with `npm run record -- <name>` while the live server runs. Inside the runner, `subprocess` and `os.system` are disabled and the working directory is on `sys.path`, so scripts can import `summarize.py`. The dev server uses port 3117 and the scripts set `NEXT_TELEMETRY_DISABLED=1`. Stop a stray server with `lsof -ti tcp:3117 | xargs kill` before running the Playwright suites.
 
-URL switches for the two optimizations: `?parser=buffered|streaming` and `?memo=off|on`; `?speed=N` scales replay timing.
+URL switches for the two optimizations: `?parser=buffered|streaming` and `?memo=off|on`; `?speed=N` (0.5–1000) scales replay timing.
 
 ## What was measured
 
-Time-to-first-step, time-to-first-delta, and React Profiler commit count / render ms for the 2×2 grid {buffered, streaming parser} × {memo off, on}, produced by `npx playwright test tests/perf` (medians; details and definitions in `docs/perf.md`). The ~5.9 s common to every row is the recorded model's first-turn latency (its first token arrives 5.4 s into the run, after adaptive thinking) replayed as-is; the streaming parser only moves the step from the end of the tool-input stream to its start, about 300 ms for this 200-character script and proportional to code length. Each median is over 2 runs, so it is the mean of two; run `PERF_RUNS=4 npx playwright test tests/perf` for more.
+Time-to-first-step, time-to-first-delta, and React Profiler commit count / render ms for the 2×2 grid {buffered, streaming parser} × {memo off, on}, produced by `npx playwright test tests/perf` (medians; details and definitions in `docs/perf.md`). The ~5.9 s common to every row is the recorded API's time to its first event (5.4 s before `message_start`; no thinking tokens were used) replayed as-is; the streaming parser moves the step from the end of the tool-input stream to its start, 230–300 ms for this 81-character script (102 characters of tool-input JSON) and proportional to the length of the streamed code. Each median is over 2 runs, so it is the mean of two; run `PERF_RUNS=4 npx playwright test tests/perf` for more.
 
 ## Left out on purpose
 
 - Julius's look and feel, side panel, and Library; other step types (slides, images, video, web search, database queries); more than one artifact type.
-- A hosted or shared code executor. The runner is a local `python3 -I` subprocess with a 10 s timeout, a 64 KiB output cap, CPU and file-size rlimits, sockets disabled, and `subprocess`/`ctypes`/`pip` imports blocked. It is a bounded guard, not a security sandbox, and Live mode is off unless `ALLOW_LIVE=1`. Julius runs code in cloud containers with dedicated CPU and RAM (https://julius.ai/docs/get-started/containers); this demo does not.
+- A hosted or shared code executor. The runner is a local `python3 -I` subprocess with a 10 s timeout, a 64 KiB output cap, CPU and file-size rlimits, sockets disabled, and `subprocess`/`ctypes`/`pip` imports blocked. It is a bounded guard, not a security sandbox, and Live mode is off unless `ALLOW_LIVE=1`. The script runs as your user and can read and write any file you can; the network and subprocess blocks are Python-level guards against accidents, not enforcement. Julius runs code in cloud containers with dedicated CPU and RAM (https://julius.ai/docs/get-started/containers); this demo does not.
 - The hosted demo is replay-only by design: the deployed page plays a recorded run with the prompt box disabled, and every live run happens on your machine.
 - Package installs (`pip`), accounts, auth, persistence beyond one request, multi-turn chat history, a cancel button, a production profiling build.
 - Cancelling a run: closing the page stops the stream to the browser, but a live model run continues on the server until it finishes or hits the 8-turn limit.
@@ -40,7 +40,7 @@ The Vercel deploy is replay-only: the server never runs Python there. Set no env
 
 ## Demo
 
-![60-second demo](docs/demo.gif)
+![Demo (recorded run replayed at half speed, condensed to 21 s)](docs/demo.gif)
 
 ## Performance (from docs/perf.md)
 
