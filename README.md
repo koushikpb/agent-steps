@@ -40,7 +40,7 @@ The Vercel deploy is replay-only: the server never runs Python there. Set no env
 
 ## Demo
 
-![Demo (recorded run replayed at half speed, condensed to 21 s)](docs/demo.gif)
+![Demo (recorded run replayed at half speed, condensed to 22 s)](docs/demo.gif)
 
 ## Performance (from docs/perf.md)
 
