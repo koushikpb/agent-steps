@@ -31,8 +31,7 @@ export function Chat({ liveEnabled, fixtures }: { liveEnabled: boolean; fixtures
       <header className="space-y-1">
         <h1 className="text-xl font-semibold">agent-steps</h1>
         <p className="text-sm text-zinc-600">
-          Streaming tool steps for a code-running agent. Step labels are quoted from{' '}
-          <a className="underline" href="https://julius.ai/docs/get-started/tools">julius.ai/docs/get-started/tools</a>.
+          Streaming tool steps for a code-running agent.
         </p>
       </header>
       <section className="flex flex-wrap items-center gap-3 text-sm">

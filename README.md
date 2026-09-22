@@ -2,8 +2,6 @@
 
 A streaming "tool steps" UI kit for code-running agents. An agent streams typed step events over SSE, and a React UI renders them as collapsible steps with code, a diff, and one interactive chart. I measure two optimizations before and after.
 
-The six step labels ("Generating code → Generated code", and the rest) are quoted from https://julius.ai/docs/get-started/tools. Nothing else in Julius's UI is copied.
-
 ## Run it
 
 ```

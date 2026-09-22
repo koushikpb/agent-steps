@@ -4,7 +4,7 @@ export const TOOL_NAMES = ['run_python', 'edit_file', 'make_chart'] as const;
 export const ToolName = z.enum(TOOL_NAMES);
 export type ToolName = z.infer<typeof ToolName>;
 
-// Quoted verbatim from https://julius.ai/docs/get-started/tools (see docs/api-notes.md).
+// Present-tense while the tool runs, past-tense when it finishes.
 export const RUNNING_LABELS: Record<ToolName, string> = {
   run_python: 'Generating code',
   edit_file: 'Editing file',

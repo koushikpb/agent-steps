@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { AgentEvent, DONE_LABELS, RUNNING_LABELS, TOOL_NAMES } from '../../lib/events';
 
 describe('labels', () => {
-  it('uses the label pairs quoted from julius.ai/docs/get-started/tools', () => {
+  it('pairs a running label with a done label for every tool', () => {
     expect(TOOL_NAMES).toEqual(['run_python', 'edit_file', 'make_chart']);
     expect(RUNNING_LABELS).toEqual({
       run_python: 'Generating code',
