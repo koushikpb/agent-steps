@@ -69,7 +69,7 @@ test.afterAll(async () => {
   });
   const docs = path.join(process.cwd(), 'docs');
   await fs.writeFile(path.join(docs, 'perf.json'), JSON.stringify({ generatedAt, speed: SPEED, runs: RUNS, samples, medians: rows }, null, 2), 'utf8');
-  const n = (v: number | null) => (v === null ? '–' : Math.round(v).toString());
+  const n = (v: number | null) => (v === null ? 'n/a' : Math.round(v).toString());
   const table = rows.filter((r) => Number.isFinite(r.ttfsMs)).map((r) => `| ${r.parser} | ${r.memo} | ${n(r.ttfsMs)} | ${n(r.ttfdMs)} | ${n(r.commits)} | ${n(r.actualMs)} | ${n(r.eventCount)} | ${n(r.totalMs)} |`).join('\n');
   const md = `# Performance
 
@@ -81,7 +81,7 @@ ${table}
 
 Definitions: time-to-first-step = ms from clicking Run to the first \`step_started\` event parsed on the client; time-to-first-delta = ms to the first \`step_delta\`; Profiler commits and render ms = count and sum of \`actualDuration\` over every commit of the \`<Profiler id="steps">\` subtree.
 
-The two optimizations: **streaming JSON parsing** (\`parser=streaming\`: the step appears at \`content_block_start\` and code streams from each \`input_json_delta\` through \`extractStringField\`, instead of one \`JSON.parse\` at \`content_block_stop\`) moves time-to-first-step and time-to-first-delta; **memoized step list** (\`memo=on\`: \`memo(StepCardView)\` plus a reducer that keeps untouched steps identical) lowers Profiler render ms for the same commit count.
+Streaming JSON parsing (\`parser=streaming\`) moves time-to-first-step and time-to-first-delta: the step appears at \`content_block_start\` and code streams from each \`input_json_delta\` through \`extractStringField\`, instead of one \`JSON.parse\` at \`content_block_stop\`. A memoized step list (\`memo=on\`: \`memo(StepCardView)\` plus a reducer that keeps untouched steps identical) lowers Profiler render ms for the same commit count.
 `;
   await fs.writeFile(path.join(docs, 'perf.md'), md, 'utf8');
 });
